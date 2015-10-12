@@ -11,6 +11,12 @@ app.set('view engine', 'jade');
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res){
+  var name = __dirname + '/views/weatherVR.html';
+  res.sendFile(name);
+  console.log(name);
+});
+
+app.get('/threeJsExample', function(req, res){
   var name = __dirname + '/views/test.html';
   res.sendFile(name);
   console.log(name);
