@@ -15,8 +15,8 @@ app.get('/', function(req, res){
   console.log(name);
 });
 
-app.get('/threeJsExample', function(req, res){
-  var name = __dirname + '/views/test.html';
+app.get('/VR', function(req, res){
+  var name = __dirname + '/views/VR.html';
   res.sendFile(name);
   console.log(name);
 });
