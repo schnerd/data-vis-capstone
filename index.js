@@ -184,7 +184,7 @@ app.get('/data',function(req, res){
   var filters = req.query.filters;
 
   // Take random subset of dummy data and send it back as JSON
-  var randomData = _.sample(myRows, 5);
+  var randomData = _.sample(dummyData, 5);
   res.send(JSON.stringify(randomData));
 });
 
