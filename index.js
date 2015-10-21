@@ -6,6 +6,7 @@ var app = express();
 var path = require('path');
 var fs = require('fs');
 var multer = require('multer');
+var _ = require('lodash');
 
 
 app.set('port', (process.env.PORT || 4500));
@@ -144,6 +145,13 @@ app.get('/scatter',function(req,res){
 })
 
 app.get('/bars',function(req, res){
+  // (Using dummy data so I can skip setting up a local DB)
+  var myRows = [{"x":0,"y":69,"z":0},{"x":0,"y":33,"z":1},{"x":0,"y":3,"z":2},{"x":1,"y":61,"z":0},{"x":1,"y":50,"z":1},{"x":1,"y":18,"z":2},{"x":2,"y":17,"z":0},{"x":2,"y":55,"z":1},{"x":2,"y":24,"z":2},{"x":3,"y":7,"z":0},{"x":3,"y":84,"z":1},{"x":3,"y":39,"z":2},{"x":4,"y":59,"z":0},{"x":4,"y":58,"z":1},{"x":4,"y":35,"z":2}];
+  res.render('bars', {
+    _data : myRows
+  });
+  return;
+
   var client = require('./public/js/database.js');
   
   if (client == null)
@@ -166,6 +174,18 @@ app.get('/bars',function(req, res){
       }
     });
   }
+});
+
+app.get('/data',function(req, res){
+  // (Using dummy data so I can skip setting up a local DB)
+  var dummyData = [{"x":0,"y":69,"z":0},{"x":0,"y":33,"z":1},{"x":0,"y":3,"z":2},{"x":1,"y":61,"z":0},{"x":1,"y":50,"z":1},{"x":1,"y":18,"z":2},{"x":2,"y":17,"z":0},{"x":2,"y":55,"z":1},{"x":2,"y":24,"z":2},{"x":3,"y":7,"z":0},{"x":3,"y":84,"z":1},{"x":3,"y":39,"z":2},{"x":4,"y":59,"z":0},{"x":4,"y":58,"z":1},{"x":4,"y":35,"z":2}];
+
+  // Filters and other data passed from frontend can be accessed using req.query
+  var filters = req.query.filters;
+
+  // Take random subset of dummy data and send it back as JSON
+  var randomData = _.sample(myRows, 5);
+  res.send(JSON.stringify(randomData));
 });
 
 

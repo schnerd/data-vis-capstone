@@ -1,6 +1,8 @@
 var camera, scene, renderer,
     geometry, material, mesh;
 
+var meshes = [];
+
     init();
     animate();
 
@@ -46,7 +48,43 @@ var camera, scene, renderer,
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.setSize( window.innerWidth, window.innerHeight );
 
-        document.body.appendChild( renderer.domElement );
+        $('.visualization').append( renderer.domElement );
+
+        // Render initial data once the page has loaded fully
+        $(document).ready(function(){
+            renderData(_querydata);
+        });
+
+        // Execute fetchData whenever we click on the filter button
+        $(document).on('click', '.filter', fetchData);
+    }
+
+    function fetchData() {
+        // Array of filters might look like this
+        // (would obviously be set from some select/slider element though)
+        var filters = [
+            {
+                field: 'x',
+                operator: '>=',
+                value: 2
+            }
+        ];
+
+        // Request JSON from the /data endpoint, passing our filters
+        $.getJSON('/data', {
+            filters: filters
+        }, function(data){
+            reset();
+            renderData(data);
+        });
+    }
+
+    function renderData(data) {
+        var d;
+        for (var i = 0; i < data.length; i++){
+            d = data[i];
+            addBar(d.x * 50, d.y * 2, d.z * 50);
+        }
     }
 
     function animate() {
@@ -59,6 +97,12 @@ var camera, scene, renderer,
         renderer.render( scene, camera );
     }
 
+    function reset() {
+        for (var i = 0; i < meshes.length; i++) {
+            scene.remove( meshes[i] );
+        }
+        meshes = [];
+    }
 
     function addBar(x,y,z){
       geometry = new THREE.BoxGeometry( 50, y, 50 );
@@ -71,5 +115,6 @@ var camera, scene, renderer,
       mesh.position.y = 10 + y/2;
       mesh.position.x = x - 500;
       mesh.position.z = z;
+      meshes.push(mesh);
       scene.add( mesh );
     }
